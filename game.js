@@ -987,6 +987,16 @@ function initGame() {
     document.getElementById('play-again').addEventListener('click', () => {
         location.reload(); // Reload the page to restart the game
     });
+    
+    // Add debug event listener - double click on the distance display to trigger Mississippi
+    document.getElementById('distance-traveled').addEventListener('dblclick', () => {
+        console.log("Debug: Manually triggering Mississippi River crossing");
+        if (!gameState.specialEvents.mississippiCrossing) {
+            triggerMississippiCrossing();
+        } else {
+            console.log("Mississippi crossing already triggered");
+        }
+    });
 }
 
 // Run initialization when the page loads
@@ -1151,13 +1161,16 @@ function travel() {
     // Update the distance
     gameState.progress.distanceTraveled = newDistance;
     
+    // Update display - this will also check for special events
+    updateGameDisplay();
+    
     // Check if we've reached or exceeded the destination
     if (gameState.progress.distanceTraveled >= gameState.progress.totalDistance) {
         // Cap distance at total
         gameState.progress.distanceTraveled = gameState.progress.totalDistance;
         console.log(`Distance capped at total: ${gameState.progress.distanceTraveled} miles.`);
         
-        // Update display
+        // Update display again after capping
         updateGameDisplay();
         
         // Start bus movement animation
@@ -1175,9 +1188,6 @@ function travel() {
         
         return;
     }
-    
-    // Update display
-    updateGameDisplay();
     
     // Start bus movement animation
     startBusMovement();
@@ -2106,11 +2116,18 @@ function checkSpecialEvents() {
     console.log(`Mississippi crossing triggered: ${gameState.specialEvents.mississippiCrossing}`);
     console.log(`Total distance: ${gameState.progress.totalDistance} miles`);
     
+    // Calculate the percentage of the journey completed
+    const journeyPercentage = (gameState.progress.distanceTraveled / gameState.progress.totalDistance) * 100;
+    console.log(`Journey percentage: ${journeyPercentage.toFixed(2)}%`);
+    
     // Check if we're approaching the Mississippi River
-    const isNearMississippi = gameState.progress.distanceTraveled >= (MISSISSIPPI_MILESTONE - mississippiRange) && 
-                             gameState.progress.distanceTraveled <= (MISSISSIPPI_MILESTONE + mississippiRange);
+    // Either by specific distance or by journey percentage (65-75%)
+    const isNearMississippi = 
+        (gameState.progress.distanceTraveled >= (MISSISSIPPI_MILESTONE - mississippiRange) && 
+         gameState.progress.distanceTraveled <= (MISSISSIPPI_MILESTONE + mississippiRange)) ||
+        (journeyPercentage >= 65 && journeyPercentage <= 75);
                              
-    console.log(`Is near Mississippi (${MISSISSIPPI_MILESTONE - mississippiRange} to ${MISSISSIPPI_MILESTONE + mississippiRange}): ${isNearMississippi}`);
+    console.log(`Is near Mississippi (${MISSISSIPPI_MILESTONE - mississippiRange} to ${MISSISSIPPI_MILESTONE + mississippiRange} miles or 65-75% of journey): ${isNearMississippi}`);
     
     if (!gameState.specialEvents.mississippiCrossing && isNearMississippi) {
         console.log("Triggering Mississippi River crossing event");
