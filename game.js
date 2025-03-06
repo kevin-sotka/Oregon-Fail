@@ -2220,27 +2220,51 @@ function startMississippiMinigame(mode) {
     mississippiGame.canvas.height = mississippiGame.canvas.clientHeight;
     
     mississippiGame.mode = mode;
-    mississippiGame.isActive = true;
+    mississippiGame.isActive = false; // Start inactive until player presses start
     mississippiGame.progress = 0;
     mississippiGame.player.health = 100;
     mississippiGame.player.x = 50;
     mississippiGame.player.y = mississippiGame.canvas.height / 2;
     mississippiGame.obstacles = [];
     mississippiGame.background.offset = 0;
+    mississippiGame.touchActive = false;
+    mississippiGame.touchTarget = { x: 0, y: 0 };
     
     // Set up instructions based on mode
     const instructionsElement = document.getElementById('mississippi-instructions');
     switch (mode) {
         case 'bridge':
-            instructionsElement.textContent = "Navigate through traffic on the busy 6-lane bridge. Avoid cars!";
+            instructionsElement.textContent = "Navigate through traffic on the busy 6-lane bridge. Avoid cars! Use arrow keys, buttons, or touch the screen to move.";
             break;
         case 'ferry':
-            instructionsElement.textContent = "Pilot your ferry across the river. Avoid rocks, sternwheelers, and drunken pleasure boats!";
+            instructionsElement.textContent = "Pilot your ferry across the river. Avoid rocks and boats! Use arrow keys, buttons, or touch the screen to move.";
             break;
         case 'shallow':
-            instructionsElement.textContent = "Drive carefully through the 'shallow' part. Don't get swept away by the current!";
+            instructionsElement.textContent = "Drive carefully through the 'shallow' part. Don't get swept away! Use arrow keys, buttons, or touch the screen to move.";
             break;
     }
+    
+    // Show the start button
+    const startButton = document.getElementById('mississippi-start');
+    startButton.style.display = 'block';
+    
+    // Draw the initial scene
+    drawMississippiScene();
+    
+    // Add start button event listener
+    startButton.addEventListener('click', startMississippiGame);
+    
+    // Add window resize handler
+    window.addEventListener('resize', handleMississippiResize);
+}
+
+// Function to actually start the Mississippi game after pressing start
+function startMississippiGame() {
+    // Hide the start button
+    document.getElementById('mississippi-start').style.display = 'none';
+    
+    // Set the game to active
+    mississippiGame.isActive = true;
     
     // Set up event listeners for keyboard controls
     window.addEventListener('keydown', handleMississippiKeyDown);
@@ -2266,12 +2290,52 @@ function startMississippiMinigame(mode) {
     document.getElementById('mississippi-right').addEventListener('touchstart', (e) => { e.preventDefault(); mississippiGame.keys.right = true; });
     document.getElementById('mississippi-right').addEventListener('touchend', () => mississippiGame.keys.right = false);
     
-    // Add window resize handler
-    window.addEventListener('resize', handleMississippiResize);
+    // Add touch controls for direct player movement
+    mississippiGame.canvas.addEventListener('touchstart', handleMississippiTouchStart);
+    mississippiGame.canvas.addEventListener('touchmove', handleMississippiTouchMove);
+    mississippiGame.canvas.addEventListener('touchend', handleMississippiTouchEnd);
     
     // Start the game loop
     mississippiGame.lastFrameTime = performance.now();
     mississippiGame.animationId = requestAnimationFrame(updateMississippiGame);
+}
+
+// Handle touch start for direct player movement
+function handleMississippiTouchStart(e) {
+    e.preventDefault();
+    if (!mississippiGame.isActive) return;
+    
+    mississippiGame.touchActive = true;
+    
+    // Get touch position relative to canvas
+    const touch = e.touches[0];
+    const rect = mississippiGame.canvas.getBoundingClientRect();
+    const scaleX = mississippiGame.canvas.width / rect.width;
+    const scaleY = mississippiGame.canvas.height / rect.height;
+    
+    mississippiGame.touchTarget.x = (touch.clientX - rect.left) * scaleX;
+    mississippiGame.touchTarget.y = (touch.clientY - rect.top) * scaleY;
+}
+
+// Handle touch move for direct player movement
+function handleMississippiTouchMove(e) {
+    e.preventDefault();
+    if (!mississippiGame.isActive || !mississippiGame.touchActive) return;
+    
+    // Get touch position relative to canvas
+    const touch = e.touches[0];
+    const rect = mississippiGame.canvas.getBoundingClientRect();
+    const scaleX = mississippiGame.canvas.width / rect.width;
+    const scaleY = mississippiGame.canvas.height / rect.height;
+    
+    mississippiGame.touchTarget.x = (touch.clientX - rect.left) * scaleX;
+    mississippiGame.touchTarget.y = (touch.clientY - rect.top) * scaleY;
+}
+
+// Handle touch end for direct player movement
+function handleMississippiTouchEnd(e) {
+    e.preventDefault();
+    mississippiGame.touchActive = false;
 }
 
 // Handle window resize for Mississippi game
@@ -2358,7 +2422,7 @@ function updateMississippiGame(timestamp) {
     mississippiGame.ctx.fillStyle = '#000';
     mississippiGame.ctx.fillRect(0, 0, mississippiGame.canvas.width, mississippiGame.canvas.height);
     
-    // Update player position based on input
+    // Update player position based on keyboard/button input
     if (mississippiGame.keys.up) {
         mississippiGame.player.y -= mississippiGame.player.speed;
     }
@@ -2370,6 +2434,24 @@ function updateMississippiGame(timestamp) {
     }
     if (mississippiGame.keys.right) {
         mississippiGame.player.x += mississippiGame.player.speed;
+    }
+    
+    // Update player position based on touch input
+    if (mississippiGame.touchActive) {
+        // Calculate direction to move towards touch target
+        const dx = mississippiGame.touchTarget.x - (mississippiGame.player.x + mississippiGame.player.width / 2);
+        const dy = mississippiGame.touchTarget.y - (mississippiGame.player.y + mississippiGame.player.height / 2);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Only move if the touch target is not too close
+        if (distance > mississippiGame.player.speed) {
+            // Normalize direction and apply speed
+            const moveX = (dx / distance) * mississippiGame.player.speed;
+            const moveY = (dy / distance) * mississippiGame.player.speed;
+            
+            mississippiGame.player.x += moveX;
+            mississippiGame.player.y += moveY;
+        }
     }
     
     // Keep player within bounds
@@ -2678,6 +2760,11 @@ function completeMississippiCrossing() {
     window.removeEventListener('keyup', handleMississippiKeyUp);
     window.removeEventListener('resize', handleMississippiResize);
     
+    // Remove touch event listeners
+    mississippiGame.canvas.removeEventListener('touchstart', handleMississippiTouchStart);
+    mississippiGame.canvas.removeEventListener('touchmove', handleMississippiTouchMove);
+    mississippiGame.canvas.removeEventListener('touchend', handleMississippiTouchEnd);
+    
     // Return to the main game
     showScreen(screens.mainGame);
     
@@ -2728,6 +2815,11 @@ function failMississippiCrossing() {
     window.removeEventListener('keyup', handleMississippiKeyUp);
     window.removeEventListener('resize', handleMississippiResize);
     
+    // Remove touch event listeners
+    mississippiGame.canvas.removeEventListener('touchstart', handleMississippiTouchStart);
+    mississippiGame.canvas.removeEventListener('touchmove', handleMississippiTouchMove);
+    mississippiGame.canvas.removeEventListener('touchend', handleMississippiTouchEnd);
+    
     // Remove touch/click event listeners from control buttons
     const buttons = ['up', 'down', 'left', 'right'];
     buttons.forEach(direction => {
@@ -2768,7 +2860,7 @@ function failMississippiCrossing() {
     // Display stats
     document.getElementById('final-days').textContent = gameState.progress.day;
     document.getElementById('final-distance').textContent = gameState.progress.distanceTraveled;
-    document.getElementById('surviving-crew').textContent = gameState.crew.filter(member => !member.status?.includes("Departed")).length;
+    document.getElementById('surviving-crew').textContent = gameState.crew.filter(member => !member.status || !member.status.includes("Departed")).length;
     
     // Clear any remaining obstacles
     mississippiGame.obstacles = [];
