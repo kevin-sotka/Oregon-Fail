@@ -1,10 +1,10 @@
-# Oregon Nope
+# Oregon Fail
 
 A humorous "reverse Oregon Trail" game where you're fleeing the West Coast to return to civilization.
 
 ## Game Concept
 
-**Oregon Nope** is a parody of the classic Oregon Trail game, but with a modern twist. You and your ragtag crew tried the "off-grid dream" out west (Portland, San Francisco, or Los Angeles) but quickly realized that Wi-Fi is spotty and rent is still $2,000 for a yurt. Now, you're making the journey back to civilization (New York or Chicago) in your creaky VW bus.
+**Oregon Fail** is a parody of the classic Oregon Trail game, but with a modern twist. You and your ragtag crew tried the "off-grid dream" out west (Portland, San Francisco, or Los Angeles) but quickly realized that Wi-Fi is spotty and rent is still $2,000 for a yurt. Now, you're making the journey back to civilization (New York or Chicago) in your creaky VW bus.
 
 ## How to Play
 
