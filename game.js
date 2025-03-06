@@ -2905,6 +2905,12 @@ function initSnackDash() {
     // Update the snacks collected display
     document.getElementById('snacks-collected').textContent = '0';
     
+    // Reset instruction and status messages
+    document.getElementById('snack-dash-instructions').textContent = 
+        "Press SPACE or tap START to begin. Use arrow keys or control buttons to navigate through the aisles and collect snacks!";
+    document.getElementById('snack-dash-status').textContent = 
+        "Collect all 3 snacks to win the maximum prize!";
+    
     // Create the store layout (walls)
     createStoreLayout();
     

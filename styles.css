@@ -462,15 +462,16 @@ input, select {
 /* Snack Dash Mini-game Styles */
 .snack-dash-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .snack-dash-stats {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
-    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 16px;
 }
 
 .snack-dash-stats .label {
@@ -478,10 +479,23 @@ input, select {
     font-weight: bold;
 }
 
+#snack-dash-instructions {
+    margin: 5px 0;
+    font-style: italic;
+    font-size: 14px;
+}
+
+#snack-dash-status {
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
 .snack-dash-game-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #snack-dash-canvas {
@@ -491,18 +505,7 @@ input, select {
 
 .snack-dash-controls {
     text-align: center;
-    margin-bottom: 20px;
-}
-
-#snack-dash-instructions {
     margin-bottom: 10px;
-    font-style: italic;
-}
-
-#snack-dash-status {
-    font-weight: bold;
-    color: #4CAF50;
-    margin-bottom: 15px;
 }
 
 /* Snack Dash control buttons */
@@ -511,25 +514,25 @@ input, select {
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
-    max-width: 200px;
+    max-width: 180px;
 }
 
 .snack-dash-controls .horizontal-controls {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin: 5px 0;
+    margin: 3px 0;
 }
 
 .snack-dash-controls button {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 50%;
-    margin: 5px;
+    margin: 3px;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -540,9 +543,9 @@ input, select {
 }
 
 #snack-dash-start {
-    width: 100px;
+    width: 80px;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 @media (min-width: 768px) {
@@ -555,6 +558,16 @@ input, select {
     #snack-dash-canvas {
         width: 100%;
         height: auto;
+    }
+    
+    .snack-dash-header h2 {
+        font-size: 18px;
+        margin: 5px 0;
+    }
+    
+    #snack-dash-instructions, 
+    #snack-dash-status {
+        padding: 0 10px;
     }
 }
 
