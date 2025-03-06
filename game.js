@@ -2249,9 +2249,45 @@ function startMississippiMinigame(mode) {
     document.getElementById('mississippi-right').addEventListener('touchstart', (e) => { e.preventDefault(); mississippiGame.keys.right = true; });
     document.getElementById('mississippi-right').addEventListener('touchend', () => mississippiGame.keys.right = false);
     
+    // Add window resize handler
+    window.addEventListener('resize', handleMississippiResize);
+    
     // Start the game loop
     mississippiGame.lastFrameTime = performance.now();
     mississippiGame.animationId = requestAnimationFrame(updateMississippiGame);
+}
+
+// Handle window resize for Mississippi game
+function handleMississippiResize() {
+    if (!mississippiGame.canvas) return;
+    
+    // Save current game state
+    const wasActive = mississippiGame.isActive;
+    
+    // Pause the game if it's active
+    if (wasActive) {
+        mississippiGame.isActive = false;
+        cancelAnimationFrame(mississippiGame.animationId);
+    }
+    
+    // Resize canvas
+    mississippiGame.canvas.width = mississippiGame.canvas.clientWidth;
+    mississippiGame.canvas.height = mississippiGame.canvas.clientHeight;
+    
+    // Adjust player position if needed
+    if (mississippiGame.player.y > mississippiGame.canvas.height - mississippiGame.player.height) {
+        mississippiGame.player.y = mississippiGame.canvas.height - mississippiGame.player.height;
+    }
+    
+    // Redraw the game
+    drawMississippiScene();
+    
+    // Resume the game if it was active
+    if (wasActive) {
+        mississippiGame.isActive = true;
+        mississippiGame.lastFrameTime = performance.now();
+        mississippiGame.animationId = requestAnimationFrame(updateMississippiGame);
+    }
 }
 
 // Handle keyboard input for the mini-game
@@ -2623,6 +2659,7 @@ function completeMississippiCrossing() {
     // Remove event listeners
     window.removeEventListener('keydown', handleMississippiKeyDown);
     window.removeEventListener('keyup', handleMississippiKeyUp);
+    window.removeEventListener('resize', handleMississippiResize);
     
     // Return to the main game
     showScreen(screens.mainGame);
@@ -2672,6 +2709,7 @@ function failMississippiCrossing() {
     // Remove event listeners
     window.removeEventListener('keydown', handleMississippiKeyDown);
     window.removeEventListener('keyup', handleMississippiKeyUp);
+    window.removeEventListener('resize', handleMississippiResize);
     
     // Remove touch/click event listeners from control buttons
     const buttons = ['up', 'down', 'left', 'right'];
@@ -2801,12 +2839,53 @@ function startSnackDash() {
     // Add event listeners for keyboard controls
     window.addEventListener('keydown', handleSnackDashKeyDown);
     window.addEventListener('keyup', handleSnackDashKeyUp);
+    
+    // Add event listeners for touch controls
+    document.getElementById('snack-dash-start').addEventListener('click', startSnackDashGame);
+    document.getElementById('snack-dash-up').addEventListener('mousedown', () => snackDashState.player.direction.y = -1);
+    document.getElementById('snack-dash-up').addEventListener('mouseup', () => snackDashState.player.direction.y = 0);
+    document.getElementById('snack-dash-down').addEventListener('mousedown', () => snackDashState.player.direction.y = 1);
+    document.getElementById('snack-dash-down').addEventListener('mouseup', () => snackDashState.player.direction.y = 0);
+    document.getElementById('snack-dash-left').addEventListener('mousedown', () => snackDashState.player.direction.x = -1);
+    document.getElementById('snack-dash-left').addEventListener('mouseup', () => snackDashState.player.direction.x = 0);
+    document.getElementById('snack-dash-right').addEventListener('mousedown', () => snackDashState.player.direction.x = 1);
+    document.getElementById('snack-dash-right').addEventListener('mouseup', () => snackDashState.player.direction.x = 0);
+    
+    // Touch events for mobile
+    document.getElementById('snack-dash-start').addEventListener('touchstart', (e) => { e.preventDefault(); startSnackDashGame(); });
+    document.getElementById('snack-dash-up').addEventListener('touchstart', (e) => { e.preventDefault(); snackDashState.player.direction.y = -1; });
+    document.getElementById('snack-dash-up').addEventListener('touchend', () => snackDashState.player.direction.y = 0);
+    document.getElementById('snack-dash-down').addEventListener('touchstart', (e) => { e.preventDefault(); snackDashState.player.direction.y = 1; });
+    document.getElementById('snack-dash-down').addEventListener('touchend', () => snackDashState.player.direction.y = 0);
+    document.getElementById('snack-dash-left').addEventListener('touchstart', (e) => { e.preventDefault(); snackDashState.player.direction.x = -1; });
+    document.getElementById('snack-dash-left').addEventListener('touchend', () => snackDashState.player.direction.x = 0);
+    document.getElementById('snack-dash-right').addEventListener('touchstart', (e) => { e.preventDefault(); snackDashState.player.direction.x = 1; });
+    document.getElementById('snack-dash-right').addEventListener('touchend', () => snackDashState.player.direction.x = 0);
+}
+
+// Function to start the Snack Dash game (extracted for reuse)
+function startSnackDashGame() {
+    if (!snackDashState.gameActive) {
+        // Start the game
+        snackDashState.gameActive = true;
+        snackDashState.lastTimestamp = performance.now();
+        updateSnackDashGame();
+        
+        // Update instructions
+        document.getElementById('snack-dash-instructions').textContent = 
+            "Use arrow keys or control buttons to navigate through the aisles and collect snacks!";
+    }
 }
 
 function initSnackDash() {
     // Reset game state
     snackDashState.canvas = document.getElementById('snack-dash-canvas');
     snackDashState.ctx = snackDashState.canvas.getContext('2d');
+    
+    // Set canvas size to match its display size
+    snackDashState.canvas.width = snackDashState.canvas.clientWidth;
+    snackDashState.canvas.height = snackDashState.canvas.clientHeight;
+    
     snackDashState.player = {
         x: 20, // Start just inside the entrance
         y: 250,
@@ -2834,6 +2913,48 @@ function initSnackDash() {
     
     // Draw the initial game state
     drawSnackDashGame();
+    
+    // Add window resize handler
+    window.addEventListener('resize', handleSnackDashResize);
+}
+
+// Handle window resize for Snack Dash
+function handleSnackDashResize() {
+    if (!snackDashState.canvas) return;
+    
+    // Save current game state
+    const wasActive = snackDashState.gameActive;
+    
+    // Pause the game if it's active
+    if (wasActive) {
+        snackDashState.gameActive = false;
+        cancelAnimationFrame(snackDashState.animationId);
+    }
+    
+    // Resize canvas
+    snackDashState.canvas.width = snackDashState.canvas.clientWidth;
+    snackDashState.canvas.height = snackDashState.canvas.clientHeight;
+    
+    // Recreate the store layout
+    createStoreLayout();
+    
+    // Adjust player position if needed
+    if (snackDashState.player.x > snackDashState.canvas.width - snackDashState.player.width) {
+        snackDashState.player.x = snackDashState.canvas.width - snackDashState.player.width - 10;
+    }
+    if (snackDashState.player.y > snackDashState.canvas.height - snackDashState.player.height) {
+        snackDashState.player.y = snackDashState.canvas.height - snackDashState.player.height - 10;
+    }
+    
+    // Redraw the game
+    drawSnackDashGame();
+    
+    // Resume the game if it was active
+    if (wasActive) {
+        snackDashState.gameActive = true;
+        snackDashState.lastTimestamp = performance.now();
+        updateSnackDashGame();
+    }
 }
 
 function createStoreLayout() {
@@ -2897,14 +3018,7 @@ function placeSnacks() {
 
 function handleSnackDashKeyDown(e) {
     if (!snackDashState.gameActive && e.code === 'Space') {
-        // Start the game when space is pressed
-        snackDashState.gameActive = true;
-        snackDashState.lastTimestamp = performance.now();
-        updateSnackDashGame();
-        
-        // Update instructions
-        document.getElementById('snack-dash-instructions').textContent = 
-            "Use arrow keys to navigate through the aisles and collect snacks!";
+        startSnackDashGame();
     }
     
     if (snackDashState.gameActive) {
@@ -3098,6 +3212,15 @@ function endSnackDash(success, perfectExit = false) {
     // Remove event listeners
     window.removeEventListener('keydown', handleSnackDashKeyDown);
     window.removeEventListener('keyup', handleSnackDashKeyUp);
+    window.removeEventListener('resize', handleSnackDashResize);
+    
+    // Remove touch/click event listeners from control buttons
+    const buttons = ['start', 'up', 'down', 'left', 'right'];
+    buttons.forEach(direction => {
+        const button = document.getElementById(`snack-dash-${direction}`);
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+    });
     
     // Calculate snacks earned based on how many were collected
     let snacksEarned = snackDashState.snacksCollected * 10;
@@ -3135,15 +3258,13 @@ function endSnackDash(success, perfectExit = false) {
     
     // Add the snacks to the player's inventory
     gameState.resources.snacks += snacksEarned;
-    
-    // Update the game display
     updateGameDisplay();
     
-    // Return to the main game after a delay
+    // Return to the main game after a short delay
     setTimeout(() => {
         showScreen(screens.mainGame);
-        showMessage(`You played Snack Dash and earned ${snacksEarned} snacks!`);
-    }, 3000);
+        showMessage(statusMessage);
+    }, 2000);
 }
 
 function drawPopcornGraphic() {

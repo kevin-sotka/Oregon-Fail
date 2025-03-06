@@ -502,6 +502,53 @@ input, select {
 #snack-dash-status {
     font-weight: bold;
     color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+/* Snack Dash control buttons */
+.snack-dash-controls .control-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
+.snack-dash-controls .horizontal-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.snack-dash-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    margin: 5px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.snack-dash-controls button:active {
+    background-color: #388E3C;
+}
+
+#snack-dash-start {
+    width: 100px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 768px) {
+    .snack-dash-controls .control-buttons {
+        display: none;
+    }
 }
 
 @media (max-width: 850px) {
