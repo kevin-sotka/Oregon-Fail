@@ -1,0 +1,544 @@
+/* General Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    line-height: 1.6;
+}
+
+.game-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #34495e;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    min-height: 600px;
+    position: relative;
+    margin-top: 20px;
+}
+
+h1, h2, h3 {
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f1c40f;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-top: 40px;
+    text-shadow: 3px 3px 0 #e74c3c;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px 5px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+/* Screen Styles */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    height: 100%;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* Title Screen */
+#title-screen {
+    justify-content: center;
+}
+
+#title-screen p {
+    max-width: 600px;
+    margin: 20px auto;
+    font-size: 1.1rem;
+}
+
+/* Setup Screen */
+.setup-form {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #7f8c8d;
+    background-color: #ecf0f1;
+    font-size: 1rem;
+}
+
+/* Main Game Screen */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.status-item {
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.label {
+    font-weight: bold;
+    color: #f1c40f;
+}
+
+.game-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.scene-description {
+    background-color: #2c3e50;
+    padding: 20px;
+    border-radius: 5px;
+    min-height: 100px;
+    border-left: 3px solid #0f0;
+}
+
+.crew-status {
+    margin: 10px;
+    padding: 10px;
+    background: #000;
+    border: 2px solid #0f0;
+}
+
+.crew-status h3 {
+    color: #0f0;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.crew-status ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.crew-status li {
+    color: #0f0;
+    margin: 5px 0;
+    font-size: 0.8em;
+    line-height: 1.2;
+}
+
+#crew-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#crew-list li {
+    padding: 5px;
+    margin: 5px 0;
+    background-color: #34495e;
+    border-radius: 3px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: #34495e;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Game Over Screen */
+#game-stats {
+    background-color: #2c3e50;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .status-bar {
+        flex-direction: column;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+    }
+    
+    .game-container {
+        padding: 10px;
+    }
+}
+
+/* Graphics Box Styles */
+.graphics-box {
+    background-color: #000;
+    border: 3px solid #0f0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    text-align: center;
+}
+
+#game-canvas {
+    background-color: #000;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Add a retro terminal font for the scene description */
+#current-scene {
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+/* Active Travel Button */
+.active-travel {
+    background-color: #2ecc71 !important;
+    animation: pulse 1s ease-in-out;
+    transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Mississippi River Crossing Mini-game */
+.mississippi-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mississippi-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.health-bar, .progress-bar {
+    width: 200px;
+    height: 20px;
+    background-color: #000;
+    border: 2px solid #0f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.health-fill, .progress-fill {
+    height: 100%;
+    background-color: #0f0;
+    width: 100%;
+    transition: width 0.3s;
+}
+
+.mississippi-game-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+#mississippi-canvas {
+    background-color: #000;
+    border: 3px solid #0f0;
+    border-radius: 5px;
+    max-width: 100%;
+    height: auto;
+}
+
+.mississippi-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#mississippi-instructions {
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.horizontal-controls {
+    display: flex;
+    gap: 20px;
+}
+
+.mississippi-controls button {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive design for the mini-game */
+@media (max-width: 768px) {
+    .health-bar, .progress-bar {
+        width: 150px;
+    }
+    
+    #mississippi-canvas {
+        width: 100%;
+        height: auto;
+    }
+    
+    .mississippi-controls button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+}
+
+/* Event Popup */
+.event-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #000;
+    border: 2px solid #0f0;
+    padding: 20px;
+    z-index: 1000;
+    width: 80%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.event-popup h2 {
+    color: #0f0;
+    margin-top: 0;
+    text-align: center;
+}
+
+.event-popup p {
+    color: #0f0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.event-choices {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.event-choices button {
+    background-color: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.event-choices button:hover {
+    background-color: #030;
+}
+
+/* Game Messages */
+.game-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: fadeInOut 5s forwards;
+    text-align: center;
+    max-width: 80%;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Snack Dash Mini-game Styles */
+.snack-dash-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.snack-dash-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.snack-dash-stats .label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.snack-dash-game-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#snack-dash-canvas {
+    background-color: #f0f0f0;
+    border: 2px solid #333;
+}
+
+.snack-dash-controls {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#snack-dash-instructions {
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+#snack-dash-status {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+@media (max-width: 850px) {
+    #snack-dash-canvas {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* Snack Dash Celebration Styles */
+.celebration-content {
+    text-align: center;
+    background-color: #FFEB3B;
+    border: 3px solid #FF9800;
+    color: #000000;
+}
+
+.celebration-content h3 {
+    color: #FF5722;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+#popcorn-graphic {
+    margin: 15px auto;
+    width: 200px;
+    height: 250px;
+}
+
+#celebration-continue {
+    background-color: #FF9800;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+#celebration-continue:hover {
+    background-color: #F57C00;
+} 

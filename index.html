@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oregon Nope</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <div id="title-screen" class="screen active">
+            <h1>Oregon Nope</h1>
+            <h2>The Reverse Oregon Trail</h2>
+            <p>You tried the "off-grid dream" out west, but now you're heading back to civilization.</p>
+            <button id="start-button">Start Journey</button>
+            <button id="instructions-button">Instructions</button>
+        </div>
+
+        <!-- Audio elements -->
+        <audio id="engine-sound" preload="auto">
+            <source src="assets/bus-sound.m4a" type="audio/mp4"></source>
+        </audio>
+
+        <div id="instructions-screen" class="screen">
+            <h2>How to Play</h2>
+            <p>You and your ragtag crew are fleeing the West Coast in your creaky VW bus, heading back to civilization.</p>
+            <p>Manage your resources (gas, cash, snacks), make choices at pit stops, and deal with random events.</p>
+            <p>Your goal is to reach your destination before you run out of resources or lose all your crew members.</p>
+            <button id="back-to-title">Back</button>
+        </div>
+
+        <div id="setup-screen" class="screen">
+            <h2>Setup Your Journey</h2>
+            <div class="setup-form">
+                <div class="form-group">
+                    <label for="player-name">Your Name:</label>
+                    <input type="text" id="player-name" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="destination">Choose Your Destination:</label>
+                    <select id="destination">
+                        <option value="new-york">New York</option>
+                        <option value="chicago">Chicago</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="starting-point">Starting Point:</label>
+                    <select id="starting-point">
+                        <option value="portland">Portland</option>
+                        <option value="san-francisco">San Francisco</option>
+                        <option value="los-angeles">Los Angeles</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Your Crew Members:</label>
+                    <input type="text" class="crew-member" placeholder="Crew Member 1">
+                    <input type="text" class="crew-member" placeholder="Crew Member 2">
+                    <input type="text" class="crew-member" placeholder="Crew Member 3">
+                </div>
+                <button id="begin-journey">Begin Journey</button>
+            </div>
+        </div>
+
+        <div id="main-game-screen" class="screen">
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="label">Day:</span>
+                    <span id="day-count">1</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Gas:</span>
+                    <span id="gas-level">100</span>%
+                </div>
+                <div class="status-item">
+                    <span class="label">Cash:</span>
+                    $<span id="cash-amount">500</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Snacks:</span>
+                    <span id="snack-amount">50</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Distance:</span>
+                    <span id="distance-traveled">0</span>/<span id="total-distance">2000</span> miles
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="graphics-box">
+                    <canvas id="game-canvas" width="400" height="200"></canvas>
+                </div>
+                
+                <div class="scene-description">
+                    <p id="current-scene">Your journey begins as you pack up your VW bus and prepare to leave the West Coast behind...</p>
+                </div>
+                
+                <div class="crew-status">
+                    <h3>Crew Status:</h3>
+                    <ul id="crew-list">
+                        <!-- Crew members will be populated here -->
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="travel-button">Travel</button>
+                    <button id="rest-button">Rest</button>
+                    <button id="shop-button">Shop</button>
+                    <button id="check-crew-button">Check Crew</button>
+                </div>
+            </div>
+
+            <div id="event-popup" class="popup">
+                <div class="popup-content">
+                    <h3 id="event-title">Random Event!</h3>
+                    <p id="event-description">Something unexpected has happened!</p>
+                    <div id="event-choices">
+                        <!-- Choices will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="screen">
+            <h2 id="game-over-title">Game Over</h2>
+            <p id="game-over-message">Your journey has come to an end.</p>
+            <div id="game-stats">
+                <p>Days on the road: <span id="final-days">0</span></p>
+                <p>Distance traveled: <span id="final-distance">0</span> miles</p>
+                <p>Surviving crew members: <span id="surviving-crew">0</span></p>
+            </div>
+            <button id="play-again">Play Again</button>
+        </div>
+        
+        <!-- Mississippi River Crossing Mini-game -->
+        <div id="mississippi-game-screen" class="screen">
+            <div class="mississippi-header">
+                <h2>Crossing the Mississippi River</h2>
+                <div class="mississippi-stats">
+                    <span class="label">Health:</span>
+                    <div class="health-bar">
+                        <div id="mississippi-health" class="health-fill"></div>
+                    </div>
+                    <span class="label">Progress:</span>
+                    <div class="progress-bar">
+                        <div id="mississippi-progress" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mississippi-game-container">
+                <canvas id="mississippi-canvas" width="800" height="400"></canvas>
+            </div>
+            
+            <div class="mississippi-controls">
+                <p id="mississippi-instructions">Use the arrow keys to navigate across the river.</p>
+                <div class="control-buttons">
+                    <button id="mississippi-up">↑</button>
+                    <div class="horizontal-controls">
+                        <button id="mississippi-left">←</button>
+                        <button id="mississippi-right">→</button>
+                    </div>
+                    <button id="mississippi-down">↓</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Snack Dash Mini-game -->
+        <div id="snack-dash-screen" class="screen">
+            <div class="snack-dash-header">
+                <h2>Snack Dash</h2>
+                <div class="snack-dash-stats">
+                    <span class="label">Snacks Collected:</span>
+                    <span id="snacks-collected">0</span>/3
+                </div>
+            </div>
+            
+            <div class="snack-dash-game-container">
+                <canvas id="snack-dash-canvas" width="800" height="500"></canvas>
+            </div>
+            
+            <div class="snack-dash-controls">
+                <p id="snack-dash-instructions">Press SPACE to start. Use arrow keys to navigate through the aisles and collect snacks!</p>
+                <p id="snack-dash-status">Collect all 3 snacks to win the maximum prize!</p>
+            </div>
+            
+            <!-- Snack Dash Celebration Popup -->
+            <div id="snack-celebration" class="popup" style="display: none;">
+                <div class="popup-content celebration-content">
+                    <h3>SNACK CHAMPION!</h3>
+                    <div id="popcorn-graphic">
+                        <!-- Popcorn bag graphic will be drawn here -->
+                        <canvas id="popcorn-canvas" width="200" height="250"></canvas>
+                    </div>
+                    <p>You collected all the snacks!</p>
+                    <p>You earned 30 snacks!</p>
+                    <button id="celebration-continue">Continue</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html> 
