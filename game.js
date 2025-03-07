@@ -19,12 +19,14 @@ const gameState = {
     progress: {
         day: 1,
         distanceTraveled: 0,
-        distanceToday: 0
+        totalDistance: 0
     },
     gameOver: false,
     specialEvents: {
         mississippiCrossing: false
-    }
+    },
+    // Track recent decisions for contextual game over messages
+    recentDecisions: []
 };
 
 // Constants
@@ -43,6 +45,35 @@ const DISTANCES = {
     "san-francisco-chicago": 2200,
     "los-angeles-new-york": 2800,
     "los-angeles-chicago": 2000
+};
+
+// Random game over explanations
+const RANDOM_GAME_OVERS = [
+    "Game over! A rogue moose toppled your van. Better luck next time.",
+    "Game over! Your VW bus was abducted by aliens conducting research on 'hipster migration patterns.'",
+    "Game over! The ghost of Jack Kerouac possessed your GPS and led you straight into a ravine.",
+    "Game over! Your crew started a kombucha brewery in the back of the van, and the fermentation explosion was catastrophic.",
+    "Game over! You stopped at a roadside psychic who cursed your journey after you refused to buy healing crystals."
+];
+
+// Decision-related game over explanations
+const DECISION_GAME_OVERS = {
+    "rest": [
+        "Game over! You rested too long and your van was overrun by a swarm of murder hornets.",
+        "Game over! While resting, your crew accidentally joined a cult that worships vintage vehicles."
+    ],
+    "travel": [
+        "Game over! Your GPS rerouted you through an abandoned movie set where a horror film was still being filmed.",
+        "Game over! You drove straight into a time vortex and ended up in the 1970s with no way back."
+    ],
+    "shop": [
+        "Game over! The gas station attendant turned out to be a serial killer who targets people who buy beef jerky.",
+        "Game over! The 'discount snacks' you purchased were actually experimental military rations that cause hallucinations."
+    ],
+    "check_crew": [
+        "Game over! Your crew mutinied after you checked on them one too many times.",
+        "Game over! While checking on your crew, you discovered they had all been replaced by pod people."
+    ]
 };
 
 // Random events
@@ -1135,6 +1166,9 @@ function updateCrewList() {
 }
 
 function travel() {
+    // Track this decision
+    trackDecision("travel");
+    
     // Check if enough resources
     if (gameState.resources.gas < TRAVEL_GAS_CONSUMPTION) {
         showMessage("Not enough gas to travel! Find a way to refill.");
@@ -1204,6 +1238,15 @@ function travel() {
 }
 
 function rest() {
+    // Track this decision
+    trackDecision("rest");
+    
+    // Check if enough resources
+    if (gameState.resources.cash < REST_CASH_COST) {
+        showMessage("Not enough cash to rest! Find a way to earn some money.");
+        return;
+    }
+    
     // Consume resources
     gameState.resources.snacks -= REST_SNACK_CONSUMPTION;
     gameState.resources.cash -= REST_CASH_COST;
@@ -1231,6 +1274,9 @@ function rest() {
 }
 
 function shop() {
+    // Track this decision
+    trackDecision("shop");
+    
     // Create shop popup
     const popup = document.getElementById('event-popup');
     const title = document.getElementById('event-title');
@@ -1344,6 +1390,9 @@ function shop() {
 }
 
 function checkCrew() {
+    // Track this decision
+    trackDecision("check_crew");
+    
     if (gameState.crew.length === 0) {
         showMessage("You have no crew members left!");
         return;
@@ -1528,7 +1577,8 @@ function endGame(reason) {
             // Message is set in failMississippiCrossing function
             break;
         default:
-            message = "Game over! Better luck next time.";
+            // Use a random explanation or one related to recent decisions
+            message = getRandomGameOverExplanation();
     }
     
     // Only set the message if it's not already set (for mississippi case)
@@ -1541,12 +1591,32 @@ function endGame(reason) {
     // Display stats
     document.getElementById('final-days').textContent = gameState.progress.day;
     document.getElementById('final-distance').textContent = gameState.progress.distanceTraveled;
-    document.getElementById('surviving-crew').textContent = gameState.crew.filter(member => member.status === 'active').length;
+    document.getElementById('surviving-crew').textContent = gameState.crew.filter(member => !member.status || !member.status.includes("Departed")).length;
     
     // Add restart button functionality
     document.getElementById('play-again').onclick = function() {
         location.reload(); // Reload the page to restart the game
     };
+}
+
+// Function to get a random game over explanation
+function getRandomGameOverExplanation() {
+    // 60% chance to use a decision-related explanation if we have recent decisions
+    if (gameState.recentDecisions.length > 0 && Math.random() < 0.6) {
+        // Get the most recent decision
+        const recentDecision = gameState.recentDecisions[0];
+        
+        // Get explanations for this decision type
+        const explanations = DECISION_GAME_OVERS[recentDecision];
+        
+        // If we have explanations for this decision type, pick a random one
+        if (explanations && explanations.length > 0) {
+            return explanations[Math.floor(Math.random() * explanations.length)];
+        }
+    }
+    
+    // Otherwise, use a random general explanation
+    return RANDOM_GAME_OVERS[Math.floor(Math.random() * RANDOM_GAME_OVERS.length)];
 }
 
 // Graphics
@@ -3437,4 +3507,17 @@ function drawPopcornGraphic() {
             ctx.fill();
         }
     }
-} 
+}
+
+// Helper function to track recent decisions
+function trackDecision(decision) {
+    // Add the decision to the beginning of the array
+    gameState.recentDecisions.unshift(decision);
+    
+    // Keep only the 5 most recent decisions
+    if (gameState.recentDecisions.length > 5) {
+        gameState.recentDecisions.pop();
+    }
+    
+    console.log("Recent decisions:", gameState.recentDecisions);
+}
