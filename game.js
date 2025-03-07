@@ -1099,7 +1099,9 @@ function startJourney() {
     });
     
     // Set total distance based on starting point and destination
-    const routeKey = `${gameState.player.startingPoint}-${gameState.player.destination}`;
+    const startPoint = gameState.player.startingPoint.toLowerCase();
+    const destination = gameState.player.destination.toLowerCase();
+    const routeKey = `${startPoint}-${destination}`;
     const totalDistance = DISTANCES[routeKey] || 2500; // Default if not found
     
     console.log(`Starting journey from ${gameState.player.startingPoint} to ${gameState.player.destination}`);
@@ -2183,8 +2185,8 @@ function checkSpecialEvents() {
     
     // Log current distance and Mississippi crossing status
     console.log(`Current distance: ${gameState.progress.distanceTraveled} miles`);
-    console.log(`Mississippi crossing triggered: ${gameState.specialEvents.mississippiCrossing}`);
     console.log(`Total distance: ${gameState.progress.totalDistance} miles`);
+    console.log(`Mississippi crossing triggered: ${gameState.specialEvents.mississippiCrossing}`);
     
     // Calculate the percentage of the journey completed
     const journeyPercentage = (gameState.progress.distanceTraveled / gameState.progress.totalDistance) * 100;
