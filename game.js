@@ -611,7 +611,9 @@ const RANDOM_EVENTS = [
             },
             {
                 getText: (eventData) => `Side with ${eventData.member2.name} (morale boost)`,
-                effect: () => {
+                effect: (eventData) => {
+                    if (!eventData.member1 || !eventData.member2) return "The music plays on in the quiet bus.";
+                    
                     // Improve crew morale
                     gameState.crew.forEach((member, index) => {
                         if (member.status && member.status.includes("Upset")) {
@@ -622,8 +624,6 @@ const RANDOM_EVENTS = [
                         }
                     });
                     updateCrewList();
-                    
-                    if (!eventData.member1 || !eventData.member2) return "The music plays on in the quiet bus.";
                     
                     // Make the first member upset
                     const loserIndex = gameState.crew.indexOf(eventData.member1);
