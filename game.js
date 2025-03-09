@@ -2182,16 +2182,32 @@ function startBusMovement() {
         // Check if audio is loaded and play with error handling
         if (engineSound.readyState >= 2) {
             console.log('Audio is loaded, playing...');
-            engineSound.play().catch(error => {
-                console.error('Error playing audio:', error);
-            });
+            const playPromise = engineSound.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error('Error playing audio:', error);
+                    // If autoplay was prevented, we'll show a message on mobile
+                    if (error.name === 'NotAllowedError' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                        console.log('Autoplay prevented on mobile device');
+                    }
+                });
+            }
         } else {
             console.log('Audio not loaded, waiting for canplay event...');
             engineSound.addEventListener('canplay', () => {
                 console.log('Audio now loaded, playing...');
-                engineSound.play().catch(error => {
-                    console.error('Error playing audio after load:', error);
-                });
+                const playPromise = engineSound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error('Error playing audio after load:', error);
+                        // If autoplay was prevented, we'll show a message on mobile
+                        if (error.name === 'NotAllowedError' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                            console.log('Autoplay prevented on mobile device');
+                        }
+                    });
+                }
             }, { once: true });
         }
     } else {
