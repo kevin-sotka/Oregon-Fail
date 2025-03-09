@@ -1102,11 +1102,11 @@ function startJourney() {
     gameState.player.destination = destination;
     gameState.player.startingPoint = startingPoint;
     gameState.crew = crewMembers;
-    gameState.day = 1;
+    gameState.progress.day = 1;
     gameState.resources.gas = 100;
     gameState.resources.cash = 500;
     gameState.resources.snacks = 50;
-    gameState.distance = 0;
+    gameState.progress.distanceTraveled = 0;
     gameState.recentDecisions = [];
     
     // Normalize the route key to match the DISTANCES object format
@@ -1116,10 +1116,10 @@ function startJourney() {
     
     // Set total distance based on route
     if (DISTANCES[routeKey]) {
-        gameState.totalDistance = DISTANCES[routeKey];
+        gameState.progress.totalDistance = DISTANCES[routeKey];
     } else {
         console.error(`Unknown route: ${routeKey}`);
-        gameState.totalDistance = 3000; // Default fallback
+        gameState.progress.totalDistance = 3000; // Default fallback
     }
     
     // Reset special events
