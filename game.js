@@ -997,9 +997,6 @@ function initGame() {
     // Make sure the title screen is shown first
     showScreen(screens.title);
     
-    // Initialize the global play counter
-    initializeCounter();
-    
     // Set up event listeners
     document.getElementById('start-button').addEventListener('click', () => {
         showScreen(screens.setup);
@@ -1138,11 +1135,15 @@ function startJourney() {
     startGraphics();
     
     // Increment the global play counter
-    incrementPlayCount().then(newCount => {
-        console.log(`Game play count incremented to: ${newCount}`);
-    }).catch(err => {
-        console.error('Failed to increment play count:', err);
-    });
+    if (typeof incrementPlayCount === 'function') {
+        incrementPlayCount().then(newCount => {
+            console.log(`Game play count incremented to: ${newCount}`);
+        }).catch(err => {
+            console.error('Failed to increment play count:', err);
+        });
+    } else {
+        console.warn('incrementPlayCount function not available');
+    }
 }
 
 function updateGameDisplay() {
