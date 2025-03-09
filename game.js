@@ -1126,7 +1126,7 @@ function startJourney() {
     };
     
     // Show the main game screen
-    showScreen(screens.main);
+    showScreen(screens.mainGame);
     
     // Update the display
     updateGameDisplay();
