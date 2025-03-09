@@ -1002,6 +1002,9 @@ function initGame() {
     // Make sure the title screen is shown first
     showScreen(screens.title);
     
+    // Initialize audio for mobile
+    initAudioForMobile();
+    
     // Set up event listeners
     document.getElementById('start-button').addEventListener('click', () => {
         showScreen(screens.setup);
@@ -1033,6 +1036,55 @@ function initGame() {
             console.log("Mississippi crossing already triggered");
         }
     });
+}
+
+// Initialize audio for mobile devices
+function initAudioForMobile() {
+    // Create a function to unlock audio
+    const unlockAudio = () => {
+        console.log('Unlocking audio...');
+        // Create a silent audio context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Create and play a silent sound to unlock audio
+        const silentSound = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = silentSound;
+        source.connect(audioContext.destination);
+        source.start(0);
+        
+        // Try to play both audio elements briefly
+        const engineSound = document.getElementById('engine-sound');
+        const shopMusic = document.getElementById('shop-music');
+        
+        if (engineSound) {
+            engineSound.volume = 0;
+            engineSound.play().then(() => {
+                engineSound.pause();
+                engineSound.volume = 0.5;
+                console.log('Engine sound unlocked');
+            }).catch(e => console.log('Could not unlock engine sound:', e));
+        }
+        
+        if (shopMusic) {
+            shopMusic.volume = 0;
+            shopMusic.play().then(() => {
+                shopMusic.pause();
+                shopMusic.volume = 0.5;
+                console.log('Shop music unlocked');
+            }).catch(e => console.log('Could not unlock shop music:', e));
+        }
+        
+        // Remove the event listeners once audio is unlocked
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
+    };
+    
+    // Add event listeners to unlock audio on user interaction
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+    document.addEventListener('keydown', unlockAudio);
 }
 
 // Run initialization when the page loads
@@ -1295,8 +1347,30 @@ function shop() {
     
     // Play shop music
     const shopMusic = document.getElementById('shop-music');
-    shopMusic.currentTime = 0;
-    shopMusic.play().catch(e => console.log("Audio play failed:", e));
+    if (shopMusic) {
+        shopMusic.currentTime = 0;
+        shopMusic.volume = 0.5;
+        
+        // Check if audio is loaded and play with error handling
+        if (shopMusic.readyState >= 2) {
+            console.log('Shop music is loaded, playing...');
+            const playPromise = shopMusic.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error('Error playing shop music:', error);
+                });
+            }
+        } else {
+            console.log('Shop music not loaded, waiting for canplay event...');
+            shopMusic.addEventListener('canplay', () => {
+                console.log('Shop music now loaded, playing...');
+                shopMusic.play().catch(error => {
+                    console.error('Error playing shop music after load:', error);
+                });
+            }, { once: true });
+        }
+    }
     
     // Create shop popup
     const popup = document.getElementById('event-popup');
