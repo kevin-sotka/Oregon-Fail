@@ -6,6 +6,8 @@
     <title>Oregon Fail</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="game-container">
@@ -15,6 +17,9 @@
             <p>You tried the "off-grid dream" out west, but now you're heading back to civilization.</p>
             <button id="start-button">Start Journey</button>
             <button id="instructions-button">Instructions</button>
+            <div class="global-counter">
+                <p>This game has been played <span id="play-count">...</span> times worldwide</p>
+            </div>
         </div>
 
         <!-- Audio elements -->
@@ -211,6 +216,7 @@
 
     </div>
 
+    <script src="supabase.js"></script>
     <script src="game.js"></script>
 </body>
 </html> 

@@ -619,4 +619,38 @@ input, select {
 
 #celebration-continue:hover {
     background-color: #F57C00;
+}
+
+/* Global Play Counter */
+.global-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #f1c40f;
+    font-family: 'Press Start 2P', cursive;
+    opacity: 0.8;
+}
+
+.global-counter p {
+    margin-bottom: 0;
+    font-size: 0.7rem;
+}
+
+#play-count {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+    .global-counter {
+        font-size: 0.7rem;
+        bottom: 10px;
+    }
+    
+    .global-counter p {
+        font-size: 0.6rem;
+    }
 } 

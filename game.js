@@ -997,6 +997,9 @@ function initGame() {
     // Make sure the title screen is shown first
     showScreen(screens.title);
     
+    // Initialize the global play counter
+    initializeCounter();
+    
     // Set up event listeners
     document.getElementById('start-button').addEventListener('click', () => {
         showScreen(screens.setup);
@@ -1065,73 +1068,81 @@ function preloadAudio() {
 }
 
 function startJourney() {
-    // Get player info
-    gameState.player.name = document.getElementById('player-name').value || "Traveler";
-    gameState.player.destination = document.getElementById('destination').value;
-    gameState.player.startingPoint = document.getElementById('starting-point').value;
+    // Get player name and destination from the form
+    const playerName = document.getElementById('player-name').value || 'Player';
+    const destination = document.getElementById('destination').value;
+    const startingPoint = document.getElementById('starting-point').value;
     
-    // Preload audio
-    preloadAudio().then(() => {
-        console.log('Audio preloaded, game ready');
-    }).catch(error => {
-        console.error('Error preloading audio:', error);
-    });
-    
-    // Get crew members
+    // Get crew members from the form
     const crewInputs = document.querySelectorAll('.crew-member');
-    gameState.crew = [];
+    const crewMembers = [];
     
-    // Add player as first crew member
-    gameState.crew.push({
-        name: gameState.player.name,
-        status: "good",
-        isPlayer: true
-    });
-    
-    // Add other crew members
     crewInputs.forEach(input => {
-        if (input.value.trim() !== "") {
-            gameState.crew.push({
-                name: input.value,
-                status: "good"
+        const name = input.value.trim();
+        if (name) {
+            crewMembers.push({
+                name: name,
+                status: 'good',
+                departed: false
             });
         }
     });
     
-    // Set total distance based on starting point and destination
-    const startPoint = gameState.player.startingPoint.toLowerCase();
-    const destination = gameState.player.destination.toLowerCase();
-    const routeKey = `${startPoint}-${destination}`;
-    const totalDistance = DISTANCES[routeKey] || 2500; // Default if not found
+    // Ensure at least one crew member
+    if (crewMembers.length === 0) {
+        crewMembers.push({
+            name: 'Buddy',
+            status: 'good',
+            departed: false
+        });
+    }
     
-    console.log(`Starting journey from ${gameState.player.startingPoint} to ${gameState.player.destination}`);
-    console.log(`Route key: ${routeKey}, Total distance: ${totalDistance} miles`);
+    // Set up initial game state
+    gameState.player.name = playerName;
+    gameState.player.destination = destination;
+    gameState.player.startingPoint = startingPoint;
+    gameState.crew = crewMembers;
+    gameState.day = 1;
+    gameState.resources.gas = 100;
+    gameState.resources.cash = 500;
+    gameState.resources.snacks = 50;
+    gameState.distance = 0;
+    gameState.recentDecisions = [];
     
-    // Reset game state
-    gameState.resources = {
-        gas: 100,
-        cash: 500,
-        snacks: 50
-    };
+    // Normalize the route key to match the DISTANCES object format
+    const normalizedStartingPoint = startingPoint.toLowerCase();
+    const normalizedDestination = destination.toLowerCase();
+    const routeKey = `${normalizedStartingPoint}-${normalizedDestination}`;
     
-    gameState.progress = {
-        day: 1,
-        distanceTraveled: 0,
-        totalDistance: totalDistance
-    };
+    // Set total distance based on route
+    if (DISTANCES[routeKey]) {
+        gameState.totalDistance = DISTANCES[routeKey];
+    } else {
+        console.error(`Unknown route: ${routeKey}`);
+        gameState.totalDistance = 3000; // Default fallback
+    }
     
-    gameState.gameOver = false;
+    // Reset special events
     gameState.specialEvents = {
-        mississippiCrossing: false
+        mississippiCrossing: false,
+        snackDash: false
     };
     
-    // Update display
-    updateGameDisplay();
-    updateCrewList();
+    // Show the main game screen
+    showScreen(screens.main);
     
-    // Show main game screen
-    showScreen(screens.mainGame);
+    // Update the display
+    updateGameDisplay();
+    
+    // Start the graphics
     startGraphics();
+    
+    // Increment the global play counter
+    incrementPlayCount().then(newCount => {
+        console.log(`Game play count incremented to: ${newCount}`);
+    }).catch(err => {
+        console.error('Failed to increment play count:', err);
+    });
 }
 
 function updateGameDisplay() {
