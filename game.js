@@ -978,22 +978,25 @@ const CREW_EVENTS = [
     }
 ];
 
-// Game screens
-const screens = {
-    title: document.getElementById('title-screen'),
-    instructions: document.getElementById('instructions-screen'),
-    setup: document.getElementById('setup-screen'),
-    mainGame: document.getElementById('main-game-screen'),
-    gameOver: document.getElementById('game-over-screen'),
-    mississippiGame: document.getElementById('mississippi-game-screen'),
-    snackDash: document.getElementById('snack-dash-screen')
-};
-
 // Global animation ID for the main game
 let animationId = null;
 
+// Game screens object
+let screens;
+
 // Initialize the game when the page loads
 function initGame() {
+    // Initialize screens object
+    screens = {
+        title: document.getElementById('title-screen'),
+        instructions: document.getElementById('instructions-screen'),
+        setup: document.getElementById('setup-screen'),
+        mainGame: document.getElementById('main-game-screen'),
+        gameOver: document.getElementById('game-over-screen'),
+        mississippiGame: document.getElementById('mississippi-game-screen'),
+        snackDash: document.getElementById('snack-dash-screen')
+    };
+    
     // Make sure the title screen is shown first
     showScreen(screens.title);
     
