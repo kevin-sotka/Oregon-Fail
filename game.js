@@ -1136,11 +1136,8 @@ function startJourney() {
     
     // Increment the global play counter
     if (typeof incrementPlayCount === 'function') {
-        incrementPlayCount().then(newCount => {
-            console.log(`Game play count incremented to: ${newCount}`);
-        }).catch(err => {
-            console.error('Failed to increment play count:', err);
-        });
+        const newCount = incrementPlayCount();
+        console.log(`Game play count incremented to: ${newCount}`);
     } else {
         console.warn('incrementPlayCount function not available');
     }
