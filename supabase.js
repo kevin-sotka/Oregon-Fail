@@ -1,6 +1,6 @@
 // Supabase configuration
-const SUPABASE_URL = 'https://wvvedaebslmainspcjdq.supabase.co'; // Replace with your Supabase URL
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2dmVkYWVic2xtYWluc3BjamRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE0OTM5NTAsImV4cCI6MjA1NzA2OTk1MH0.ZtG03B-Coa2hKn_q3WkJOjOaxSiJ0jHsmFI7VARZKMw'; // Replace with your Supabase anon key
+const SUPABASE_URL = "https://wvvedaebslmainspcjdq.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2dmVkYWVic2xtYWluc3BjamRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE0OTM5NTAsImV4cCI6MjA1NzA2OTk1MH0.ZtG03B-Coa2hKn_q3WkJOjOaxSiJ0jHsmFI7VARZKMw";
 
 // Initialize Supabase client
 let supabaseClient;
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Initializing Supabase client...');
         
         // Check if supabase is available
-        if (typeof window.supabase === 'undefined') {
+        if (typeof supabase === 'undefined') {
             console.error('Supabase library not loaded. Make sure the CDN script is included and loaded properly.');
             const countElement = document.getElementById('play-count');
             if (countElement) {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log('Supabase client initialized successfully');
         
         // Initialize the counter after client is ready
