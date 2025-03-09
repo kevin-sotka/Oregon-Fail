@@ -26,7 +26,9 @@ const gameState = {
         mississippiCrossing: false
     },
     // Track recent decisions for contextual game over messages
-    recentDecisions: []
+    recentDecisions: [],
+    // Flag to track when transitioning to Snack Dash
+    transitioningToSnackDash: false
 };
 
 // Constants
@@ -1291,6 +1293,11 @@ function shop() {
     // Track this decision
     trackDecision("shop");
     
+    // Play shop music
+    const shopMusic = document.getElementById('shop-music');
+    shopMusic.currentTime = 0;
+    shopMusic.play().catch(e => console.log("Audio play failed:", e));
+    
     // Create shop popup
     const popup = document.getElementById('event-popup');
     const title = document.getElementById('event-title');
@@ -1333,6 +1340,8 @@ function shop() {
                     gameState.resources.cash -= 30;
                     updateGameDisplay();
                     updateShopDescription();
+                    // Set flag before hiding popup
+                    gameState.transitioningToSnackDash = true;
                     hidePopup();
                     startSnackDash();
                     return "";
@@ -1516,6 +1525,17 @@ function showEvent(event) {
 function hidePopup() {
     const popup = document.getElementById('event-popup');
     popup.style.display = 'none';
+    
+    // Stop shop music if it's playing (only when leaving the shop, not when starting Snack Dash)
+    const shopMusic = document.getElementById('shop-music');
+    if (shopMusic && !gameState.transitioningToSnackDash) {
+        shopMusic.pause();
+    }
+    
+    // Reset the flag after checking it
+    if (gameState.transitioningToSnackDash) {
+        gameState.transitioningToSnackDash = false;
+    }
 }
 
 // Show a message to the player
@@ -3407,6 +3427,12 @@ function endSnackDash(success, perfectExit = false) {
     // Stop the game
     snackDashState.gameActive = false;
     cancelAnimationFrame(snackDashState.animationId);
+    
+    // Stop shop music
+    const shopMusic = document.getElementById('shop-music');
+    if (shopMusic) {
+        shopMusic.pause();
+    }
     
     // Remove event listeners
     window.removeEventListener('keydown', handleSnackDashKeyDown);
