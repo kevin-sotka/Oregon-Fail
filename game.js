@@ -1068,7 +1068,9 @@ function startJourney() {
     });
     
     // Set total distance based on starting point and destination
-    const routeKey = `${gameState.player.startingPoint}-${gameState.player.destination}`;
+    const startPoint = gameState.player.startingPoint.toLowerCase();
+    const destination = gameState.player.destination.toLowerCase();
+    const routeKey = `${startPoint}-${destination}`;
     const totalDistance = DISTANCES[routeKey] || 2500; // Default if not found
     
     console.log(`Starting journey from ${gameState.player.startingPoint} to ${gameState.player.destination}`);
