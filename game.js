@@ -1127,6 +1127,13 @@ function startJourney() {
     const destination = document.getElementById('destination').value;
     const startingPoint = document.getElementById('starting-point').value;
     
+    // Increment the global play count
+    if (typeof incrementPlayCount === 'function') {
+        incrementPlayCount().catch(error => {
+            console.error('Failed to increment play count:', error);
+        });
+    }
+    
     // Get crew members from the form
     const crewInputs = document.querySelectorAll('.crew-member');
     const crewMembers = [];
@@ -1190,14 +1197,6 @@ function startJourney() {
     
     // Start the graphics
     startGraphics();
-    
-    // Increment the global play counter
-    if (typeof incrementPlayCount === 'function') {
-        const newCount = incrementPlayCount();
-        console.log(`Game play count incremented to: ${newCount}`);
-    } else {
-        console.warn('incrementPlayCount function not available');
-    }
 }
 
 function updateGameDisplay() {
